@@ -5,22 +5,12 @@ const tesseract = require('tesseract.js');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
-// Endpoint for image upload
-app.post('/upload', upload.single('file'), (req, res) => {
-  const imagePath = req.file.path;
-
-  // Run OCR on the uploaded image
-  tesseract.recognize(imagePath, 'eng', {
-    logger: (m) => console.log(m),
-  })
-  .then(({ data: { text } }) => {
-    res.json({ text: text });  // Send back the recognized text
-  })
-  .catch((err) => {
-    res.status(500).send('Error processing image');
-  });
+app.post('/upload', upload.single('files[]'), (req, res) => {  // <-- Field name 'files[]'
+    if (!req.file) return res.status(400).send('No file uploaded.');
+    
+    tesseract.recognize(req.file.path, 'eng')
+        .then(({ data: { text } }) => res.json({ text }))
+        .catch((err) => res.status(500).send('OCR error: ' + err.message));
 });
 
-app.listen(57838, () => {
-  console.log('OCR server running on port 57838');
-});
+app.listen(57838, () => console.log('OCR server running on port 57838'));
