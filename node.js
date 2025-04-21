@@ -7,37 +7,41 @@ const path = require('path');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
-// POST /upload - handle file uploads
+// Endpoint for image upload
 app.post('/upload', upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
   const imagePath = req.file.path;
 
-  // Run OCR with Tesseract.js
+  // Perform OCR
   tesseract.recognize(imagePath, 'eng', {
-    logger: m => console.log(m) // optional: logs progress
+    logger: m => console.log(m),
   })
   .then(({ data: { text } }) => {
-    // Delete the uploaded file after processing
-    fs.unlink(imagePath, (err) => {
-      if (err) console.error('Failed to delete temp file:', err);
+    // Clean up uploaded file
+    fs.unlink(imagePath, err => {
+      if (err) console.error('Error deleting uploaded file:', err);
     });
 
-    // Return recognized text as JSON
+    // Send back recognized text
     res.json({ text: text.trim() });
   })
   .catch(err => {
-    console.error('OCR Error:', err);
+    console.error('OCR error:', err);
 
-    // Clean up file even on failure
-    fs.unlink(imagePath, (unlinkErr) => {
-      if (unlinkErr) console.error('Failed to delete temp file:', unlinkErr);
+    // Clean up on error too
+    fs.unlink(imagePath, err => {
+      if (err) console.error('Error deleting file after OCR fail:', err);
     });
 
     res.status(500).json({ error: 'Error processing image' });
   });
 });
 
-// Start the server
-const PORT = 54381;
-app.listen(PORT, () => {
+// IMPORTANT: Bind to all IPs, not just localhost
+const PORT = 57838;
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🧠 OCR server running on port ${PORT}`);
 });
