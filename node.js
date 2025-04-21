@@ -1,30 +1,58 @@
-const express = require('express');  // Import the express module
-const multer = require('multer');    // Import multer for handling file uploads
-const tesseract = require('tesseract.js');  // Import Tesseract.js for OCR
-const cors = require('cors');        // Import CORS for handling cross-origin requests
+// server.js
 
-const app = express();  // Create the express app
-const upload = multer({ dest: 'uploads/' });  // Configure multer to save uploads in 'uploads' directory
+const express = require('express');
+const multer = require('multer');
+const tesseract = require('tesseract.js');
+const fs = require('fs');
+const path = require('path');
 
-app.use(cors());  // Enable all CORS requests (allowing all origins)
+const app = express();
+const port = 57838;  // Port can be whatever you want, match the Lua script port
 
-// Endpoint for image upload
-app.post('/upload', upload.single('file'), (req, res) => {  // 'file' is the expected field name
-  const imagePath = req.file.path;
+// Configure multer for image file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));  // Save with a unique filename
+  }
+});
 
-  // Run OCR on the uploaded image
-  tesseract.recognize(imagePath, 'eng', {
-    logger: (m) => console.log(m),
-  })
-  .then(({ data: { text } }) => {
-    res.json({ text: text });  // Send back the recognized text
-  })
-  .catch((err) => {
-    res.status(500).send('Error processing image');
+const upload = multer({ storage: storage });
+
+// Ensure the uploads directory exists
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
+
+// Endpoint for handling file upload
+app.post('/upload', upload.single('file'), (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.file.filename);
+
+  // Perform OCR on the uploaded image using Tesseract.js
+  tesseract.recognize(
+    filePath,
+    'eng',
+    {
+      logger: (m) => console.log(m),
+    }
+  ).then(({ data: { text } }) => {
+    console.log('OCR Result: ', text);
+    res.json({
+      success: true,
+      extractedText: text,
+    });
+
+    // Optionally, delete the image after processing
+    fs.unlinkSync(filePath);
+  }).catch(err => {
+    console.error('Error processing image: ', err);
+    res.status(500).json({ success: false, error: 'Failed to process image.' });
   });
 });
 
 // Start the server
-app.listen(57838, () => {
-  console.log('OCR server running on port 57838');
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
