@@ -1,5 +1,3 @@
-// server.js
-
 const express = require('express');
 const multer = require('multer');
 const tesseract = require('tesseract.js');
@@ -7,15 +5,15 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const port = 57838;  // Port can be whatever you want, match the Lua script port
+const port = 57838; // Use the specified port
 
 // Configure multer for image file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, 'uploads/')
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));  // Save with a unique filename
+    cb(null, Date.now() + path.extname(file.originalname))
   }
 });
 
@@ -52,7 +50,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
   });
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+// Listen on the specified IP address and port
+const host = '0.0.0.0';  // Use '0.0.0.0' to allow connections from any IP address
+app.listen(port, host, () => {
+  console.log(`Server running on http://35.156.54.176:${port}`);
 });
